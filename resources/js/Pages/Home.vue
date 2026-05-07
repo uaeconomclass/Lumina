@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { Head } from '@inertiajs/vue3'
 
 const stats = [
@@ -7,6 +8,17 @@ const stats = [
     { value: '4.9★', label: 'Google Rating' },
     { value: '$0',   label: 'Hidden Fees' },
 ]
+
+const searchMake  = ref('')
+const searchPrice = ref('')
+
+function doSearch() {
+    const params = new URLSearchParams()
+    if (searchMake.value)  params.set('make', searchMake.value)
+    if (searchPrice.value) params.set('price', searchPrice.value)
+    const qs = params.toString()
+    window.location.href = qs ? `/cars?${qs}` : '/cars'
+}
 
 const featuredCars = [
     {
@@ -157,7 +169,7 @@ const testimonials = [
                     <!-- Badge -->
                     <div class="inline-flex items-center gap-2 mb-7 px-3.5 py-1.5 rounded-full border border-white/10 bg-white/5 text-sm text-white/55">
                         <span class="w-2 h-2 rounded-full bg-orange-400 animate-pulse shrink-0"></span>
-                        50 Pre-Owned Vehicles Available Now
+                        Up to 50 Pre-Owned Vehicles Available
                     </div>
 
                     <!-- Headline -->
@@ -173,23 +185,26 @@ const testimonials = [
 
                     <!-- Search bar -->
                     <div class="flex flex-col sm:flex-row gap-2 p-2 rounded-2xl bg-white/8 backdrop-blur border border-white/10 max-w-2xl mb-10">
-                        <select class="flex-1 px-4 py-3 rounded-xl bg-white/10 text-white border-0 text-sm focus:outline-none focus:ring-1 focus:ring-orange-400/50 [&>option]:bg-slate-900 [&>option]:text-white cursor-pointer">
+                        <select v-model="searchMake" class="flex-1 px-4 py-3 rounded-xl bg-white/10 text-white border-0 text-sm focus:outline-none focus:ring-1 focus:ring-orange-400/50 [&>option]:bg-slate-900 [&>option]:text-white cursor-pointer">
                             <option value="">Any Make</option>
-                            <option>Toyota</option>
-                            <option>Honda</option>
-                            <option>Ford</option>
-                            <option>Chevrolet</option>
-                            <option>Nissan</option>
                             <option>BMW</option>
+                            <option>Chevrolet</option>
+                            <option>Ford</option>
+                            <option>Honda</option>
+                            <option>Hyundai</option>
+                            <option>Jeep</option>
+                            <option>Mazda</option>
+                            <option>Nissan</option>
+                            <option>Toyota</option>
                         </select>
-                        <select class="flex-1 px-4 py-3 rounded-xl bg-white/10 text-white border-0 text-sm focus:outline-none focus:ring-1 focus:ring-orange-400/50 [&>option]:bg-slate-900 [&>option]:text-white cursor-pointer">
-                            <option value="">Max Price</option>
-                            <option>Under $15,000</option>
-                            <option>$15,000 – $25,000</option>
-                            <option>$25,000 – $35,000</option>
-                            <option>$35,000+</option>
+                        <select v-model="searchPrice" class="flex-1 px-4 py-3 rounded-xl bg-white/10 text-white border-0 text-sm focus:outline-none focus:ring-1 focus:ring-orange-400/50 [&>option]:bg-slate-900 [&>option]:text-white cursor-pointer">
+                            <option value="">Any Price</option>
+                            <option value="1">Under $20k</option>
+                            <option value="2">$20k – $30k</option>
+                            <option value="3">$30k – $40k</option>
+                            <option value="4">$40k+</option>
                         </select>
-                        <button class="px-8 py-3 rounded-xl bg-orange-500 text-white font-semibold text-sm hover:bg-orange-600 active:bg-orange-700 transition-colors whitespace-nowrap">
+                        <button @click="doSearch" class="px-8 py-3 rounded-xl bg-orange-500 text-white font-semibold text-sm hover:bg-orange-600 active:bg-orange-700 transition-colors whitespace-nowrap">
                             Search Cars
                         </button>
                     </div>
@@ -235,8 +250,8 @@ const testimonials = [
                         <div class="text-xs font-semibold text-orange-500 tracking-widest uppercase mb-2">Inventory</div>
                         <h2 class="text-4xl font-bold text-gray-900 tracking-tight">Featured Vehicles</h2>
                     </div>
-                    <a href="#" class="hidden sm:flex items-center gap-1.5 text-sm font-semibold text-orange-500 hover:text-orange-600 transition-colors">
-                        View All 50 Cars
+                    <a href="/cars" class="hidden sm:flex items-center gap-1.5 text-sm font-semibold text-orange-500 hover:text-orange-600 transition-colors">
+                        View All 12 Cars
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
                         </svg>
@@ -286,7 +301,7 @@ const testimonials = [
                             </div>
                             <div class="flex items-center justify-between">
                                 <span class="text-2xl font-bold text-gray-900">${{ car.price }}</span>
-                                <a href="#" class="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-orange-500 text-white text-sm font-semibold hover:bg-orange-600 transition-colors">
+                                <a :href="`/cars/${car.id}`" class="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-orange-500 text-white text-sm font-semibold hover:bg-orange-600 transition-colors">
                                     View Details
                                     <svg class="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
@@ -298,8 +313,8 @@ const testimonials = [
                 </div>
 
                 <div class="mt-8 text-center sm:hidden">
-                    <a href="#" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-gray-200 text-sm font-semibold text-gray-700 hover:border-orange-300 hover:text-orange-600 transition-all">
-                        View All 50 Cars →
+                    <a href="/cars" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-gray-200 text-sm font-semibold text-gray-700 hover:border-orange-300 hover:text-orange-600 transition-all">
+                        View All 12 Cars →
                     </a>
                 </div>
             </div>
@@ -435,8 +450,8 @@ const testimonials = [
                 </div>
                 <span>© 2025 AutoHaven. All rights reserved.</span>
                 <div class="flex gap-5">
-                    <a href="#" class="hover:text-white/40 transition-colors">Privacy Policy</a>
-                    <a href="#" class="hover:text-white/40 transition-colors">Terms</a>
+                    <a href="/cars" class="hover:text-white/40 transition-colors">Privacy Policy</a>
+                    <a href="/cars" class="hover:text-white/40 transition-colors">Terms</a>
                 </div>
             </div>
         </footer>
